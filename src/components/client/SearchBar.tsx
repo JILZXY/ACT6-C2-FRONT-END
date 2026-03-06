@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import '@/styles/filters.css'
 
 export default function SearchBar() {
@@ -10,27 +10,27 @@ export default function SearchBar() {
   const [value, setValue] = useState(searchParams.get('name') ?? '')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    setValue(searchParams.get('name') ?? '')
-  }, [searchParams])
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value
+      setValue(newValue)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
-    setValue(newValue)
+      if (debounceRef.current) clearTimeout(debounceRef.current)
 
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-
-    debounceRef.current = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (newValue.trim()) {
-        params.set('name', newValue.trim())
-      } else {
-        params.delete('name')
-      }
-      params.delete('page')
-      router.push(`/characters?${params.toString()}`)
-    }, 400)
-  }
+      debounceRef.current = setTimeout(() => {
+        debounceRef.current = null
+        const params = new URLSearchParams(searchParams.toString())
+        if (newValue.trim()) {
+          params.set('name', newValue.trim())
+        } else {
+          params.delete('name')
+        }
+        params.delete('page')
+        router.push(`/characters?${params.toString()}`)
+      }, 400)
+    },
+    [router, searchParams]
+  )
 
   return (
     <div className="search-bar">

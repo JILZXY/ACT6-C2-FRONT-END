@@ -3,6 +3,7 @@ import { getCharacters } from '@/libs/api'
 import CharacterGrid from '@/components/server/CharacterGrid'
 import FilterBar from '@/components/client/FilterBar'
 import Pagination from '@/components/client/Pagination'
+import type { CharacterListResponse } from '@/types/character'
 
 interface PageProps {
   searchParams: Promise<{
@@ -36,6 +37,15 @@ function ErrorState({ message }: { message: string }) {
   )
 }
 
+function CharactersResult({ data }: { data: CharacterListResponse }) {
+  return (
+    <>
+      <CharacterGrid results={data.results} />
+      <Pagination info={data.info} />
+    </>
+  )
+}
+
 async function CharactersContent({
   searchParams,
 }: {
@@ -46,15 +56,10 @@ async function CharactersContent({
     page?: string
   }
 }) {
-  try {
-    const data = await getCharacters(searchParams)
+  let data: CharacterListResponse
 
-    return (
-      <>
-        <CharacterGrid results={data.results} />
-        <Pagination info={data.info} />
-      </>
-    )
+  try {
+    data = await getCharacters(searchParams)
   } catch (error) {
     const message =
       error instanceof Error
@@ -62,6 +67,8 @@ async function CharactersContent({
         : 'Error inesperado al cargar los personajes.'
     return <ErrorState message={message} />
   }
+
+  return <CharactersResult data={data} />
 }
 
 export default async function CharactersPage({ searchParams }: PageProps) {
