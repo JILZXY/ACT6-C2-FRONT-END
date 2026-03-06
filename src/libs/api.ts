@@ -1,6 +1,20 @@
-import type { CharacterListResponse } from '@/types/character'
+import type { CharacterListResponse, ApiError } from '@/types/character'
 
 const API_URL = process.env.BACKEND_URL
+
+export class ApiRequestError extends Error {
+  public code: string
+  public statusCode: number
+  public details?: Record<string, string>
+
+  constructor(statusCode: number, error: ApiError) {
+    super(error.message)
+    this.name = 'ApiRequestError'
+    this.code = error.code
+    this.statusCode = statusCode
+    this.details = error.details
+  }
+}
 
 export const getCharacters = async (params: {
   name?: string
@@ -18,7 +32,13 @@ export const getCharacters = async (params: {
     next: { revalidate: 60 }
   })
 
-  if (!res.ok) throw new Error('Error al obtener personajes')
+  if (!res.ok) {
+    const errorBody: ApiError = await res.json().catch(() => ({
+      code: 'UNKNOWN_ERROR',
+      message: 'Error al conectar con el servidor',
+    }))
+    throw new ApiRequestError(res.status, errorBody)
+  }
 
   return res.json()
 }
