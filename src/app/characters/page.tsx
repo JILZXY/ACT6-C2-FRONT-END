@@ -77,7 +77,7 @@ export default async function CharactersPage({ searchParams }: PageProps) {
   return (
     <>
       <header className="header">
-        <span className="header__icon">⚗️</span>
+        <span className="header__icon">👻</span>
         <h1 className="header__title">Rick and Morty Catalog</h1>
       </header>
 
