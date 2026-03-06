@@ -1,0 +1,116 @@
+/* ── Character Grid ──────────────────────── */
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .character-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .character-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .character-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Character Card ─────────────────────── */
+
+.character-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  cursor: default;
+}
+
+.character-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+  box-shadow: 0 8px 30px var(--shadow-green);
+}
+
+.character-card__image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.character-card__image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.character-card:hover .character-card__image {
+  transform: scale(1.05);
+}
+
+.character-card__body {
+  padding: 1rem 1rem 1.25rem;
+}
+
+.character-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+}
+
+.character-card__meta {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Skeleton grid ──────────────────────── */
+
+.character-grid--loading .skeleton-card {
+  min-height: 300px;
+}
+
+/* ── Empty state ────────────────────────── */
+
+.character-grid--empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+}
+
+.character-grid--empty__icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.character-grid--empty__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.character-grid--empty__message {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
